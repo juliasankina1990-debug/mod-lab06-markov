@@ -1,5 +1,8 @@
+// Copyright 2026 GHA Test Team
+
 #include <iostream>
 #include <fstream>
+#include <string>
 #include "textgen.h"
 
 int main() {
@@ -26,6 +29,7 @@ int main() {
     }
     outfile << result;
 
-    std::cout << "Generated " << MAXGEN << "-word text saved to result/gen.txt\n";
+    std::cout << "Generated " << MAXGEN
+              << "-word text saved to result/gen.txt" << std::endl;
     return 0;
 }
