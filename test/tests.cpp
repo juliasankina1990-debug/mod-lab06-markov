@@ -1,3 +1,4 @@
+#include <algorithm>
 #include <gtest/gtest.h>
 #include "textgen.h"
 #include <sstream>
@@ -112,6 +113,6 @@ TEST(TextGenTest, ManualTableStructure) {
     ASSERT_TRUE(tab.count(cd) == 1);
     const auto& v = tab.at(cd);
     ASSERT_EQ(v.size(), 2u);
-    ASSERT_TRUE(std::find(v.begin(), v.end(), "fish") != v.end());
-    ASSERT_TRUE(std::find(v.begin(), v.end(), "bird") != v.end());
+    ASSERT_TRUE(std::find(v.begin(), v.end(), std::string("fish")) != v.end());
+    ASSERT_TRUE(std::find(v.begin(), v.end(), std::string("bird")) != v.end());
 }
