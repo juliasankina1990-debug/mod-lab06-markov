@@ -37,29 +37,38 @@ std::string TextGen::generate(int maxWords) {
         keys.push_back(entry.first);
     }
 
-    std::uniform_int_distribution<size_t> prefixDist(0, keys.size() - 1);
-    prefix current = keys[prefixDist(rng)];
-
     std::ostringstream out;
-    out << current[0];
-    for (size_t i = 1; i < current.size(); ++i) {
-        out << " " << current[i];
-    }
+    int generated = 0;
+    bool firstPrefix = true;
 
-    int generated = NPREF;
     while (generated < maxWords) {
-        auto it = statetab.find(current);
-        if (it == statetab.end()) break;
+        std::uniform_int_distribution<size_t> prefixDist(0, keys.size() - 1);
+        prefix current = keys[prefixDist(rng)];
 
-        const auto& suffixes = it->second;
-        auto suffixDist =
-            std::uniform_int_distribution<size_t>(0, suffixes.size() - 1);
-        const std::string& next = suffixes[suffixDist(rng)];
+        if (firstPrefix) {
+            out << current[0];
+            for (size_t i = 1; i < current.size(); ++i)
+                out << " " << current[i];
+            generated += NPREF;
+            firstPrefix = false;
+        } else {
+            out << " " << current[0] << " " << current[1];
+            generated += 2;
+        }
 
-        out << " " << next;
-        current.pop_front();
-        current.push_back(next);
-        ++generated;
+        // Генерация от текущего префикса до тупика или maxWords
+        while (generated < maxWords) {
+            auto it = statetab.find(current);
+            if (it == statetab.end()) break;
+            const auto& suffixes = it->second;
+            auto suffixDist =
+                std::uniform_int_distribution<size_t>(0, suffixes.size() - 1);
+            const std::string& next = suffixes[suffixDist(rng)];
+            out << " " << next;
+            current.pop_front();
+            current.push_back(next);
+            ++generated;
+        }
     }
     return out.str();
 }
