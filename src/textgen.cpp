@@ -7,7 +7,7 @@
 #include <sstream>
 #include <algorithm>
 
-TextGen::TextGen() : rng(std::random_device{}()) {}
+TextGen::TextGen() : rng(std::random_device{}()) { }
 
 void TextGen::setSeed(unsigned int seed) {
     rng.seed(seed);
