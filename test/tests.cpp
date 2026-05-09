@@ -1,9 +1,10 @@
 // Copyright 2026 GHA Test Team
+// Copyright 2021 GHA Test Team
+#include <gtest/gtest.h>
+
 #include <sstream>
 #include <string>
 #include <algorithm>
-
-#include <gtest/gtest.h>
 
 #include "textgen.h"
 
