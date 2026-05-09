@@ -8,7 +8,7 @@
 #include <random>
 
 const int NPREF = 2;
-const int MAXGEN = 1000;
+const int MAXGEN = 1500;
 
 typedef std::deque<std::string> prefix;
 
