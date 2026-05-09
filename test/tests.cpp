@@ -1,11 +1,11 @@
 // Copyright 2026 GHA Test Team
+#include "textgen.h"
+
 #include <sstream>
 #include <string>
 #include <algorithm>
 
 #include <gtest/gtest.h>
-
-#include "textgen.h"
 
 // 1. Создание префикса из двух слов
 TEST(TextGenTest, PrefixCreation) {
