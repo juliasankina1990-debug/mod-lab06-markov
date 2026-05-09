@@ -10,34 +10,30 @@ void TextGen::setSeed(unsigned int seed) {
 
 void TextGen::learn(std::istream& in) {
     statetab.clear();
-    allPrefixes.clear();
-
     prefix current;
     std::string word;
-
-    // читаем первые npref слов для стартового префикса
     for (int i = 0; i < NPREF && in >> word; ++i) {
         current.push_back(word);
     }
-    if (static_cast<int>(current.size()) < NPREF) return; // мало слов
+    if (static_cast<int>(current.size()) < NPREF) return;
 
-    allPrefixes.push_back(current);
-
-    // обрабатываем оставшийся текст
     while (in >> word) {
         statetab[current].push_back(word);
         current.pop_front();
         current.push_back(word);
-        allPrefixes.push_back(current);
     }
 }
 
 std::string TextGen::generate(int maxWords) {
     if (statetab.empty()) return "";
 
-    // Случайный выбор первого префикса
-    std::uniform_int_distribution<size_t> prefixDist(0, allPrefixes.size() - 1);
-    prefix current = allPrefixes[prefixDist(rng)];
+    std::vector<prefix> keys;
+    for (const auto& entry : statetab) {
+        keys.push_back(entry.first);
+    }
+
+    std::uniform_int_distribution<size_t> prefixDist(0, keys.size() - 1);
+    prefix current = keys[prefixDist(rng)];
 
     std::ostringstream out;
     out << current[0];
@@ -48,7 +44,7 @@ std::string TextGen::generate(int maxWords) {
     int generated = NPREF;
     while (generated < maxWords) {
         auto it = statetab.find(current);
-        if (it == statetab.end()) break; // нет продолжения
+        if (it == statetab.end()) break;
 
         const auto& suffixes = it->second;
         std::uniform_int_distribution<size_t> suffixDist(0, suffixes.size() - 1);
@@ -59,7 +55,6 @@ std::string TextGen::generate(int maxWords) {
         current.push_back(next);
         ++generated;
     }
-
     return out.str();
 }
 

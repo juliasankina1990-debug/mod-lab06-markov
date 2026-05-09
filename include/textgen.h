@@ -29,6 +29,5 @@ public:
 
 private:
     std::map<prefix, std::vector<std::string>> statetab;
-    std::vector<prefix> allPrefixes;
     std::mt19937 rng;
 };
