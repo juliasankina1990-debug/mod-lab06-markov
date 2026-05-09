@@ -39,36 +39,34 @@ std::string TextGen::generate(int maxWords) {
 
     std::ostringstream out;
     int generated = 0;
-    bool firstPrefix = true;
+
+    std::uniform_int_distribution<size_t> prefixDist(0, keys.size() - 1);
+    prefix current = keys[prefixDist(rng)];
+    for (const auto& w : current) {
+        if (generated >= maxWords) break;
+        if (generated > 0) out << " ";
+        out << w;
+        ++generated;
+    }
 
     while (generated < maxWords) {
-        std::uniform_int_distribution<size_t> prefixDist(0, keys.size() - 1);
-        prefix current = keys[prefixDist(rng)];
-
-        if (firstPrefix) {
-            out << current[0];
-            for (size_t i = 1; i < current.size(); ++i)
-                out << " " << current[i];
-            generated += NPREF;
-            firstPrefix = false;
-        } else {
-            out << " " << current[0] << " " << current[1];
-            generated += 2;
+        auto it = statetab.find(current);
+        if (it == statetab.end()) {
+            current = keys[prefixDist(rng)];
+            for (const auto& w : current) {
+                if (generated >= maxWords) break;
+                out << " " << w;
+                ++generated;
+            }
+            continue;
         }
-
-        // Генерация от текущего префикса до тупика или maxWords
-        while (generated < maxWords) {
-            auto it = statetab.find(current);
-            if (it == statetab.end()) break;
-            const auto& suffixes = it->second;
-            auto suffixDist =
-                std::uniform_int_distribution<size_t>(0, suffixes.size() - 1);
-            const std::string& next = suffixes[suffixDist(rng)];
-            out << " " << next;
-            current.pop_front();
-            current.push_back(next);
-            ++generated;
-        }
+        const auto& suffixes = it->second;
+        std::uniform_int_distribution<size_t> suffixDist(0, suffixes.size() - 1);
+        const std::string& next = suffixes[suffixDist(rng)];
+        out << " " << next;
+        current.pop_front();
+        current.push_back(next);
+        ++generated;
     }
     return out.str();
 }
