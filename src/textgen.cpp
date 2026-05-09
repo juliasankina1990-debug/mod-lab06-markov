@@ -71,6 +71,6 @@ std::string TextGen::generate(int maxWords) {
     return out.str();
 }
 
-const std::map<prefix, std::vector<std::string>>& TextGen::getStatetab() const{
+const std::map<prefix, std::vector<std::string>>& TextGen::getStatetab() const {
     return statetab;
 }
