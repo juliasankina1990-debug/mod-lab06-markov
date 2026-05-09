@@ -1,8 +1,13 @@
+// Copyright 2026 GHA Test Team
+
 #include "textgen.h"
+#include <map>
+#include <string>
+#include <vector>
 #include <sstream>
 #include <algorithm>
 
-TextGen::TextGen() : rng(std::random_device{}()) {}
+TextGen::TextGen() : rng(std::random_device()) {}
 
 void TextGen::setSeed(unsigned int seed) {
     rng.seed(seed);
@@ -47,7 +52,8 @@ std::string TextGen::generate(int maxWords) {
         if (it == statetab.end()) break;
 
         const auto& suffixes = it->second;
-        std::uniform_int_distribution<size_t> suffixDist(0, suffixes.size() - 1);
+        auto suffixDist =
+            std::uniform_int_distribution<size_t>(0, suffixes.size() - 1);
         const std::string& next = suffixes[suffixDist(rng)];
 
         out << " " << next;
