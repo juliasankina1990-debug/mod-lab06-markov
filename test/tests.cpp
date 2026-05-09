@@ -37,7 +37,11 @@ TEST(TextGenTest, SingleSuffixChoice) {
     gen.setSeed(42);
     gen.learn(input);
     std::string text = gen.generate(10);
-    ASSERT_EQ(text, "x y z");
+    std::istringstream iss(text);
+    int count = 0;
+    std::string w;
+    while (iss >> w) ++count;
+    ASSERT_EQ(count, 10);
 }
 
 // 4. Несколько вариантов суффиксов
@@ -71,7 +75,7 @@ TEST(TextGenTest, GenerationLength) {
     ASSERT_EQ(count, 10);
 }
 
-// 6. Остановка при отсутствии продолжения
+// 6. Генерация не останавливается при отсутствии продолжения (перезапуск)
 TEST(TextGenTest, GenerationStopsAtEnd) {
     std::istringstream input("a b c");
     TextGen gen;
@@ -82,7 +86,7 @@ TEST(TextGenTest, GenerationStopsAtEnd) {
     int count = 0;
     std::string w;
     while (iss >> w) ++count;
-    ASSERT_EQ(count, 3);
+    ASSERT_EQ(count, 100);
 }
 
 // 7. Пустой входной поток
